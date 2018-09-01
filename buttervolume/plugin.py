@@ -31,7 +31,7 @@ TEST_REMOTE_PATH = getconfig(config, 'TEST_REMOTE_PATH',
                              '/var/lib/buttervolume/received/')
 SCHEDULE = getconfig(config, 'SCHEDULE',
                      '/etc/buttervolume/schedule.csv')
-DRIVERNAME = getconfig(config, 'DRIVERNAME', 'anybox/buttervolume:latest')
+DRIVERNAME = getconfig(config, 'DRIVERNAME', 'marcovit79/buttervolume:latest')
 RUNPATH = getconfig(config, 'RUNPATH', '/run/docker')
 SOCKET = getconfig(config, 'SOCKET',
                    os.path.join(RUNPATH, 'plugins', 'btrfs.sock'))
@@ -73,22 +73,40 @@ def plugin_activate(req):
 @route('/VolumeDriver.Create', ['POST'])
 @add_debug_log
 def volume_create(req):
+    log.error('Request: %s', req)
     name = req['Name']
     if '@' in name:
         return {'Err': '"@" is illegal in a volume name'}
+    
+    clonefrom = None
+    opts = req['Opts']
+    if opts:
+        clonefrom = opts['from']
+    
     volpath = join(VOLUMES_PATH, name)
-    # volume already exists?
-    if name in [v['Name']for v in list_volumes()['Volumes']]:
+    if clonefrom == None:    
+        # volume already exists?
+        if name in [v['Name']for v in list_volumes()['Volumes']]:
+            return {'Err': ''}
+        try:
+            btrfs.Subvolume(volpath).create()
+        except CalledProcessError as e:
+            return {'Err': e.stderr.decode()}
+        except OSError as e:
+            return {'Err': e.strerror}
+        except Exception as e:
+            return {'Err': str(e)}
         return {'Err': ''}
-    try:
-        btrfs.Subvolume(volpath).create()
-    except CalledProcessError as e:
-        return {'Err': e.stderr.decode()}
-    except OSError as e:
-        return {'Err': e.strerror}
-    except Exception as e:
-        return {'Err': str(e)}
-    return {'Err': ''}
+    else:
+        sourcepath = join(VOLUMES_PATH, clonefrom)
+        targetpath = volpath
+        volume = btrfs.Subvolume(sourcepath)
+        if volume.exists():
+            # clone
+            volume.snapshot( targetpath )
+            return {'Err': ''}
+        else:
+            return {'Err': 'No source volume'}
 
 
 def volumepath(name):
