@@ -9,8 +9,8 @@ setup(
     name="buttervolume",
     version="3.6dev",
     author="Christophe Combelles",
-    author_email="ccomb@anybox.fr",
-    url="https://github.com/anybox/buttervolume",
+    author_email="Marco.Vit@ditechspa.it",
+    url="https://github.com/marcovit79/buttervolume",
     license="Apache License, Version 2.0",
     description="Docker plugin to manage Docker Volumes as BTRFS subvolumes",
     long_description=open('README.rst').read() + '\n'

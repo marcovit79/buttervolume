@@ -1,5 +1,5 @@
 FROM debian:stretch
-MAINTAINER Christophe Combelles. <ccomb@anybox.fr>
+MAINTAINER Marco Vit
 
 RUN set -x; \
     apt-get update \
@@ -17,10 +17,9 @@ RUN set -x; \
     && mkdir /etc/buttervolume /root/.ssh
 
 ENV VERSION master
-RUN curl -o buttervolume.zip -SL https://github.com/anybox/buttervolume/archive/${VERSION}.zip \
-    && unzip buttervolume.zip \
+ADD buttervolume.zip buttervolume.zip
+RUN unzip buttervolume.zip \
     && rm buttervolume.zip \
-    && mv buttervolume-${VERSION} buttervolume \
     && cd buttervolume \
     && python3 setup.py install \
     && cd .. \

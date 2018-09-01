@@ -1,6 +1,6 @@
 {
     "Description": "BTRFS Volume Plugin for Docker",
-    "Documentation": "https://github.com/anybox/buttervolume/",
+    "Documentation": "https://github.com/marcovit79/buttervolume/",
     "Entrypoint": ["/entrypoint.sh", "run"],
     "Mounts": [
         {"Type": "bind",
