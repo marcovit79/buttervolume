@@ -31,7 +31,7 @@ TEST_REMOTE_PATH = getconfig(config, 'TEST_REMOTE_PATH',
                              '/var/lib/buttervolume/received/')
 SCHEDULE = getconfig(config, 'SCHEDULE',
                      '/etc/buttervolume/schedule.csv')
-DRIVERNAME = getconfig(config, 'DRIVERNAME', 'marcovit79/buttervolume:latest')
+DRIVERNAME = getconfig(config, 'DRIVERNAME', 'mvit79/buttervolume:latest')
 RUNPATH = getconfig(config, 'RUNPATH', '/run/docker')
 SOCKET = getconfig(config, 'SOCKET',
                    os.path.join(RUNPATH, 'plugins', 'btrfs.sock'))
